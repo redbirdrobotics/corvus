@@ -18,26 +18,10 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
 )
 
-## Roslaunch
-if(CATKIN_ENABLE_TESTING)
-	find_package(roslaunch REQUIRED)
-	roslaunch_add_file_check(launch)
-endif()
-
 ## System dependencies are found with CMake's conventions
-
-## OpenCV
-set(OpenCV_DIR=/usr/lib/opencv)
-set(OpenCV_INCLUDE_DIRS=/usr/lib/opencv/include)
-
-find_package(OpenCV)
-include_directories(${OpenCV_INCLUDE_DIRS})
-
-find_package(OpenCV 3 REQUIRED
-	NO_MODULE
-	PATHS ~/opencv/build
-	NO_DEFAULT_PATH
-)
+# find_package(Boost REQUIRED COMPONENTS system)
+set(OpenCV_DIR=/usr/lib)
+find_package(OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
