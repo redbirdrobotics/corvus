@@ -4,6 +4,9 @@ devel/
 logs/
 .catkin_tools/
 
+# ros
+*.rosinstall*
+
 # vim
 *.swp
 
