@@ -1,9 +1,9 @@
 <launch>
     <!-- Master Machine -->
-    <machine name="redbird-vehicle" address="192.168.0.121" user="redbird" default="true" />
+    <machine name="redbird-vehicle" address="192.168.0.164" user="redbird" default="true" />
 
     <!-- Ground Machine -->
-    <!-- <machine name="redbird-pi" address="192.168.0.120" user="redbird" default="false" env-loader="~/catkin_ws/devel/env.sh" /> -->
+    <!-- <machine name="me" address="192.168.0.100" user="me" default="false" env-loader="~/catkin_ws/devel/env.sh" /> -->
 
     <!-- Hande MAVROS launch -->
   <arg name="fcu_url" default="/dev/ttyUSB0:921600" />
@@ -24,7 +24,7 @@
 
     <group ns="redbird">
         <!-- Control Panel -->
-        <!-- <node machine="redbird-pi" name="rcp" pkg="redbird_m7a_controlpanel" type="controlpanel_node.py" /> -->
+        <!-- <node machine="me" name="rcp" pkg="redbird_m7a_controlpanel" type="controlpanel_node.py" /> -->
 
         <!-- Localization -->
         <node name="cameras" pkg="redbird_m7a_vehicle" type="camera_node" output="screen" />
