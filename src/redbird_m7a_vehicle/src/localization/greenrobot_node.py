@@ -1,7 +1,8 @@
 #!/usr/bin/python
+# TODO: change above to /usr/bin/env python
 import rospy
 import cv2
-import tf
+import tf # TODO: roslaunch, when failing due to missing flight controller, complained about this import statement. Not known if the issue was related. See complete error msg here: https://gist.github.com/nolanholden/4c6245ea7d727e7b48b83f52ae1f773e
 import numpy as np
 from redbird import *
 from sensor_msgs.msg import Image
