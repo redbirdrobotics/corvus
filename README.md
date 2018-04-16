@@ -1,4 +1,4 @@
-# corvus
+# Corvus
 Redbird Robotic's flagship autonomous aerial drone.
 
 
