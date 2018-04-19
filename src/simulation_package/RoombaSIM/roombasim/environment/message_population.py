@@ -24,9 +24,9 @@ class ROSExtension(object):
 
         self.msgMap = []
 
-        self.msgNumMap = NumMap()
+        self.msgNumMap = None
 
-        self.msg = Num()
+        self.msg = None
 
         #initialize node
         rospy.init_node(node_name, anonymous=True)
@@ -49,6 +49,8 @@ class ROSExtension(object):
 
         for rba in roomba:
 
+            self.msg = Num()
+
             self.msg.x, self.msg.y = rba.pos
 
             self.msg.id = rba.tag
@@ -57,9 +59,33 @@ class ROSExtension(object):
 
             rospy.loginfo('populating msg')
 
+        rospy.loginfo(self.msgMap)
+        
+        if not len(roomba) == 10:
 
+            i = len(roomba)
+
+            while i < 10:
+
+                self.msg = Num()
+
+                self.msg.x, self.msg.y, self.msg.id = -1, -1, -1
+
+                self.msgMap.append(self.msg)
+
+                #rospy.loginfo("Loop called this many times: ")
+
+                #rospy.loginfo(str(i))
+
+                rospy.loginfo(self.msgMap)
+
+                i+=1
+
+        self.msgNumMap = NumMap()
+        
         self.msgNumMap.numMap = self.msgMap
 
+        
         if not rospy.is_shutdown():
 
             rospy.loginfo('publishing the message')
@@ -68,6 +94,7 @@ class ROSExtension(object):
 
             rospy.loginfo(self.msgNumMap)
 
+        
         del self.msgMap[:]
 
     def populate_publish_or_msg(self, roomba):

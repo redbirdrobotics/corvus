@@ -18,6 +18,7 @@ class On_Board_Sim():
         self.ros.create_listener('Differentiate_Roombas', self.listener_for_roombas, Num)
 
     def listener_for_roombas(self, ros_msg):
+
         ground_roomba = roomba()
 
         ground_roomba.pos = ros_msg.x, ros_msg.y

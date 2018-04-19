@@ -18,6 +18,7 @@ from roombasim import geometry
 from droneFOV import DroneFOV
 
 class Environment(object):
+    
     '''
     A class to represent a game round.
 
@@ -36,7 +37,6 @@ class Environment(object):
         self.ros_target_roomba = message_population.ROSExtension('On_Board_Simulation')
         self.ros_target_roomba.create_target_roomba_publisher()
         self.fov = DroneFOV()
-
 
     def reset(self):
         '''
@@ -112,35 +112,6 @@ class Environment(object):
 
             rba.update(delta, elapsed)
 
-            self.fov.get_coors(self.agent)
-
-            if self.fov.isInFOV(rba.pos) and type(rba) is roomba.TargetRoomba:
-
-                self.ros_target_roomba.logInfo(self.fov.isInFOV(rba.pos))
-
-                self.ros_target_roomba.logInfo('roomba is seen!')
-
-                if len(self.activeRoombas) > 0:
-                    if not rba.pos == self.activeRoombas[-1].pos:
-
-                        self.activeRoombas.append(rba)
-
-                curr_count = len(self.activeRoombas)
-
-                self.ros_target_roomba.logInfo('curr_count is: ')
-
-                self.ros_target_roomba.logInfo(str(curr_count))
-
-                if curr_count == 10:
-
-                    self.ros_target_roomba.populate_publish_tr_msg(self.activeRoombas)
-
-                    self.ros_target_roomba.logInfo('populating the msg')
-
-                    curr_count = 0
-
-                    del self.activeRoombas[:]
-
             # Perform roomba-to-roomba collision detection
             for j in range(len(self.roombas)):
                 # ignore self collisions and collisions with roombas that left
@@ -171,6 +142,46 @@ class Environment(object):
                 rba.stop()
 
             grand_count+=1
+
+            #self.ros_target_roomba.logInfo('grand_count is: ')
+
+            #self.ros_target_roomba.logInfo(str(grand_count))
+
+            self.fov.get_coors(self.agent)
+
+            #self.ros_target_roomba.logInfo(self.fov.isInFOV(rba.pos))
+
+            if self.fov.isInside(rba.pos) and type(rba) is roomba.TargetRoomba:
+
+                self.ros_target_roomba.logInfo(self.fov.isInside(rba.pos))
+
+                self.ros_target_roomba.logInfo('roomba is seen!')
+
+                self.activeRoombas.append(rba)
+
+                curr_count = len(self.activeRoombas)
+
+                self.ros_target_roomba.logInfo('curr_count is: ')
+
+                self.ros_target_roomba.logInfo(str(curr_count))
+
+                #self.ros_target_roomba.logInfo('grand_count is: ')
+
+                #self.ros_target_roomba.logInfo(str(grand_count))
+
+            if grand_count == 14:
+
+                if not len(self.activeRoombas) == 0:
+                
+                    self.ros_target_roomba.populate_publish_tr_msg(self.activeRoombas)
+
+                    self.ros_target_roomba.logInfo('populating the msg')
+
+                curr_count = 0
+
+                grand_count = 0
+
+                del self.activeRoombas[:]
 
         # update the drone
         self.agent.update(delta, elapsed)
@@ -222,4 +233,3 @@ class Environment(object):
             reward = 2000
 
         return (has_left, reward)
-

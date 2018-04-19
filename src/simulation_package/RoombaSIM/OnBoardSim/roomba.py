@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ROSExtension import ROSExtension
 from simulation_package.msg import Sim
 import numpy as np
