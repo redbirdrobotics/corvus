@@ -61,7 +61,9 @@ class Controller(object):
             rospy.logerr("Unable to start flight control thread: %s" % str(e))
 
     def is_running(self):
-        return not rospy.is_shutdown() and not self.shutdown_flag.is_set() and self._vehicle.get_mode() == 'OFFBOARD'
+        return (not rospy.is_shutdown()
+            and not self.shutdown_flag.is_set()
+            and self._vehicle.get_mode() == 'OFFBOARD')
 
     def set_mode(self, mode):
         """Sets the vehicle mode to one of those available in the Control_Mode class.
