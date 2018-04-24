@@ -11,8 +11,8 @@ From a remote machine, do the following:
 ssh <vehicle_username>@<vehicle_address>
 
 # clone the flight repo
-git clone https://github.com/redbirdrobotics/test-catkin-ws
-cd test-catkin-ws
+git clone https://github.com/redbirdrobotics/corvus
+cd corvus
 
 # build the ros project(s)
 catkin build
@@ -25,6 +25,19 @@ roslaunch redbird_m7a_vehicle startup.launch
 
 # serve the desired flight to the vehicle (this corresponds to a programmed 
 #   "flight", discoverable by the "flight_director".)
+rosservice call /redbird/flight_director/start_flight "takeoff_land"
+```
+
+Putting that all together:
+```sh
+ssh <vehicle_username>@<vehicle_address> && \
+git clone https://github.com/redbirdrobotics/corvus && \
+cd corvus && \
+catkin build && \
+source devel/setup.bash && \
+roslaunch redbird_m7a_vehicle startup.launch
+
+# make sure you are ready to fly before the following line:
 rosservice call /redbird/flight_director/start_flight "takeoff_land"
 ```
 
@@ -48,6 +61,8 @@ chmod +x install_geographiclib_datasets.sh # make sure we have permissions
 
 
 # How to contribute: 
+```sh
 git clone https://github.com/redbirdrobotics/corvus
 git checkout -b [sim|loc|flight|controlpanel]dev # depending on your subteam
+```
 
