@@ -18,18 +18,34 @@ class Control_Mode(Enum):
     INITIAL, TAKEOFF, HOLD, LAND, VELOCITY, POSITION = range(0, 6)
 
 
+class VehicleControlInterfaces(object):
+    def __init__(self, set_target_velocity, set_target_position, set_target_thrust):
+        """
+        Dependency-injection interface for Controller class.
+
+        Args:
+            set_target_velocity (function(TwistStamped))
+            set_target_position (function(PoseStamped))
+            set_target_thrust   (function(Float64))
+        """
+        self.set_target_velocity = set_target_velocity
+        self.set_target_position = set_target_position
+        self.set_target_thrust   = set_target_thrust
+
 class Controller(object):
-    def __init__(self, shutdown_flag):
+    def __init__(self, shutdown_flag, vehicle_control_handlers):
+        """
+        Args:
+            vehicle_control_handlers (VehicleControlInterfaces): the way the 
+              Controller send its desired states (e.g., velocity, position, etc)
+        """
         # Create vehicle interface
         self._vehicle = flightsys.Vehicle()
-
-        # Define queue size
         self._queue_size = 1
+        if type(vehicle_control_handlers) is not VehicleControlInterfaces:
+            raise TypeError("type mismatch")
 
-        # Create publishers
-        self._vel_pub = rospy.Publisher('/mavros/setpoint_velocity/cmd_vel', TwistStamped, queue_size=self._queue_size)
-        self._pos_pub = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, queue_size=self._queue_size)
-        self._att_pub = rospy.Publisher('/mavros/setpoint_attitude/att_throttle', Float64, queue_size=self._queue_size)
+        self.vehicle_ctrl_handlers = vehicle_control_handlers
 
         # Threading event
         self.shutdown_flag = shutdown_flag
@@ -205,7 +221,7 @@ class Controller(object):
         msg.twist.linear.z = -1.0
 
         # Publish message
-        self._vel_pub.publish(msg)
+        vehicle_ctrl_handlers.set_target_velocity(msg)
 
         # Sleep to maintain appropriate update frequency
         self._rate.sleep()
@@ -228,7 +244,7 @@ class Controller(object):
             msg.header = Header(stamp=rospy.get_rostime())
 
             # Publish message
-            self._pos_pub.publish(msg)
+            self.vehicle_ctrl_handlers.set_target_position(msg)
 
             # Sleep to maintain appropriate update frequency
             self._rate.sleep()
@@ -270,7 +286,7 @@ class Controller(object):
             msg.header = Header(stamp=rospy.get_rostime())
 
             # Publish message
-            self._vel_pub.publish(msg)
+            vehicle_ctrl_handlers.set_target_velocity(msg)
 
             # Sleep to maintain appropriate update frequency
             self._rate.sleep()
@@ -302,14 +318,14 @@ class Controller(object):
             #     time = rospy.get_time()
             #     while (rospy.get_time() - time < 3) and self.is_running():
             #         msg.twist.linear.z = 0
-            #         self._vel_pub.publish(msg)
+            #         vehicle_ctrl_handlers.set_target_velocity(msg)
             #     break
 
             # Update message header
             msg.header = Header(stamp=rospy.get_rostime())
 
             # Publish message
-            self._vel_pub.publish(msg)
+            vehicle_ctrl_handlers.set_target_velocity(msg)
 
             # Sleep to maintain appropriate update frequency
             self._rate.sleep()
@@ -349,7 +365,7 @@ class Controller(object):
                 break
 
             # Publish message
-            self._pos_pub.publish(msg)
+            self.vehicle_ctrl_handlers.set_target_position(msg)
 
             # Sleep to maintain appropriate update frequency
             self._rate.sleep()
@@ -380,7 +396,7 @@ class Controller(object):
             msg.header = Header(stamp=rospy.get_rostime())
 
             # Publish message
-            self._vel_pub.publish(msg)
+            vehicle_ctrl_handlers.set_target_velocity(msg)
 
             # Sleep to maintain appropriate update frequency
             self._rate.sleep()

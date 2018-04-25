@@ -48,7 +48,15 @@ class Flight(object):
             self.vehicle = flightsys.Vehicle()
 
             # Create controller
-            self.controller = flightsys.Controller(self.shutdown_flag)
+            vel_pub = rospy.Publisher('/mavros/setpoint_velocity/cmd_vel', TwistStamped, queue_size=self._queue_size)
+            pos_pub = rospy.Publisher('/mavros/setpoint_position/local', PoseStamped, queue_size=self._queue_size)
+            att_pub = rospy.Publisher('/mavros/setpoint_attitude/att_throttle', Float64, queue_size=self._queue_size)
+            vehicle_control_interface = flightsys.VehicleControlInterfaces(
+                set_target_velocity = vel_pub.publish,
+                set_target_position = pos_pub.publish,
+                set_target_thrust   = att_pub.publish
+            )
+            self.controller = flightsys.Controller(self.shutdown_flag, vehicle_control_interface)
 
             # Reset flight diagnositcs
             self.start_time = 0.0
