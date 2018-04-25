@@ -11,8 +11,8 @@ From a remote machine, do the following:
 ssh <vehicle_username>@<vehicle_address>
 
 # clone the flight repo
-git clone https://github.com/redbirdrobotics/test-catkin-ws
-cd test-catkin-ws
+git clone https://github.com/redbirdrobotics/corvus
+cd corvus
 
 # build the ros project(s)
 catkin build
@@ -28,6 +28,19 @@ roslaunch redbird_m7a_vehicle startup.launch
 rosservice call /redbird/flight_director/start_flight "takeoff_land"
 ```
 
+Putting that all together:
+```sh
+ssh <vehicle_username>@<vehicle_address> && \
+git clone https://github.com/redbirdrobotics/corvus && \
+cd corvus && \
+catkin build && \
+source devel/setup.bash && \
+roslaunch redbird_m7a_vehicle startup.launch
+
+# make sure you are ready to fly before the following line:
+rosservice call /redbird/flight_director/start_flight "takeoff_land"
+```
+
 Having any issues?
 try opening a new terminal any sourcing the environment variables again (from a 
 properly built catkin workspace) using `source devel/setup.bash`.
@@ -38,16 +51,18 @@ properly built catkin workspace) using `source devel/setup.bash`.
 
 + `warning: libboost_system.so.1.58.0, needed by /opt/ros/kinetic/lib/libroscpp.so, may conflict with libboost_system.so.1.61.0`
 
-solved with:
+solved by installing geographical dataset for `mavros`:
 ```sh
-wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh
-chmod +x install_geographiclib_datasets.sh # make sure we have permissions
+wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh && \
+chmod +x install_geographiclib_datasets.sh # make sure we have permissions && \
 ./install_geographiclib_datasets.sh
 ```
 
 
 
 # How to contribute: 
+```sh
 git clone https://github.com/redbirdrobotics/corvus
 git checkout -b [sim|loc|flight|controlpanel]dev # depending on your subteam
+```
 
